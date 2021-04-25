@@ -9,7 +9,9 @@
 
 #include "commands.h"
 
+
 int server_fd, client_fd;
+
 
 
 int main (int argc, char *argv[]) {
@@ -98,16 +100,17 @@ int main (int argc, char *argv[]) {
                 bytes_read -= 2;
             }
 
-            if (strcmp(buffer, "shutdown") == 0) {
-                send(client_fd, "Exiting...\n", 12, 0);
+            if ((strcmp(buffer, "stop\n") == 0 || strcmp(buffer, "q\n") == 0)) {
+                send(client_fd, "Stopping\n", 10, 0);
                 shutdown(client_fd, SHUT_RDWR);
                 close(client_fd);
                 close(server_fd);
                 return 0;
             } else if (strcmp(buffer, "help") == 0) {
-                send(client_fd, "add <path> <content> - add file\nadd <path> - add dir\nread <path> - print file or dir\nupdate <path> <content> - update file\nremove <path> - remove file or dir (recursively)\nshutdown - shutdown server\n/a/b/c/ - example path to dir\n/a/b/c - example path to file\n", 260, 0);
-                continue;
-            }
+                char* string="";
+                send(client_fd, string,strlen(string) , 0);
+                continue;}
+
 
             size_t first_space;
             for (first_space = 0; buffer[first_space] != ' ' && first_space < bytes_read; first_space++);
@@ -129,8 +132,8 @@ int main (int argc, char *argv[]) {
             memcpy(path, buffer + first_space + 1, second_space - first_space - 1);
             path[second_space - first_space - 1] = 0;
 
-            if (strcmp(command, "read") == 0) {
-                int size = fs_size(&fs, path);
+            if (strcmp(command, "ls") == 0) {
+                int size = //size
                 if (size >= 0) {
                     char* content = malloc(size);
                     handle_error(client_fd, fs_read(&fs, path, content, size));
@@ -139,24 +142,24 @@ int main (int argc, char *argv[]) {
                 } else {
                     handle_error(client_fd, size);
                 }
-            } else if (strcmp(command, "add") == 0) {
-                res = fs_add(&fs, path, buffer + second_space + 1, strlen(buffer + second_space + 1) + 1);
+            } else if (strcmp(command, "touch") == 0) {
+                res =//touch
                 if (res < 0) {
                     handle_error(client_fd, res);
                 } else {
                     send(client_fd, "OK\n", 4, 0);
                 }
-            } else if (strcmp(command, "update") == 0) {
-                res = fs_update(&fs, path, buffer + second_space + 1, strlen(buffer + second_space + 1) + 1);
+            } else if (strcmp(command, "echo") == 0) {
+                res = //echo
                 if (res < 0) {
                     handle_error(client_fd, res);
                 } else {
                     send(client_fd, "OK\n", 4, 0);
                 }
-            } else if (strcmp(command, "remove") == 0) {
-                res = fs_remove(&fs, path);
+            } else if (strcmp(command, "rm") == 0) {
+                res = //remove
                 if (res < 0) {
-                    handle_error(client_fd, res);
+                   return 1
                 } else {
                     send(client_fd, "OK\n", 4, 0);
                 }
@@ -169,7 +172,7 @@ int main (int argc, char *argv[]) {
         }
     }
 
-    return 0;
+    return 0;}
 
 
 //

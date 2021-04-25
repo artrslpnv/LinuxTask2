@@ -1,8 +1,8 @@
 #include "commands.h"
-int Init()
+int Init(char* fs_name)
 {
-    if(load_filesystem("FS")<=-1) {
-        int ret=create_filesystem("FS");
+    if(load_filesystem(fs_name)<=-1) {
+        int ret=create_filesystem(fs_name);
         if(ret<0){return ret;}
         strcpy(cur_path,init_dir());
         return 0;}

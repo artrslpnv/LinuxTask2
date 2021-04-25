@@ -13,7 +13,7 @@
 
 char cur_path[100];
 char new_path[100];
-int Init();
+int Init(char* file_nm);
 void str_process(char *string, char **argv, int *argc);
 void rel_to_abs(char *relative, char *absolute);
 void help(void);
